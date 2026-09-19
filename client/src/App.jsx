@@ -7,12 +7,18 @@ function App() {
   const [previousPage, setPreviousPage] = useState('')
   const [selectedSkills, setSelectedSkills] = useState([])
   const [selectedDomain, setSelectedDomain] = useState('')
+  const [selectedInterest, setSelectedInterest] = useState('')
+  const [suggestedDomain, setSuggestedDomain] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginMessage, setLoginMessage] = useState('')
 
   const domainInfo = domains.find(
     (domain) => domain.name === selectedDomain
+  )
+
+  const suggestedDomainInfo = domains.find(
+    (domain) => domain.name === suggestedDomain
   )
 
   const goToPage = (newPage) => {
@@ -55,6 +61,36 @@ function App() {
 
   const selectNone = () => {
     setSelectedSkills(['None of the above'])
+  }
+
+  const selectInterest = (interest) => {
+    setSelectedInterest(interest)
+
+    if (interest === 'Building & Creating') {
+      setSuggestedDomain('Web Development')
+    }
+
+    if (interest === 'Working with Data') {
+      setSuggestedDomain('Data Science')
+    }
+
+    if (interest === 'Security & Problem Solving') {
+      setSuggestedDomain('Cybersecurity')
+    }
+
+    if (interest === 'Designing Experiences') {
+      setSuggestedDomain('UI/UX Design')
+    }
+  }
+
+  const chooseSuggestedDomain = () => {
+    if (!suggestedDomain) {
+      return
+    }
+
+    setSelectedDomain(suggestedDomain)
+    setSelectedSkills([])
+    goToPage('overview')
   }
 
   const handleLogin = () => {
@@ -194,7 +230,7 @@ function App() {
 
           <p>
             Tell us what you already have in mind
-            so we can guide your learning journey.
+            so we can personalize your learning journey.
           </p>
 
           <div className="profile-buttons">
@@ -206,7 +242,7 @@ function App() {
             </button>
 
             <button
-              onClick={() => goToPage('domains')}
+              onClick={() => goToPage('interests')}
             >
               No, help me explore
             </button>
@@ -216,7 +252,7 @@ function App() {
         </section>
       )}
 
-      {/* DOMAIN SELECTION */}
+      {/* DOMAIN SELECTION FOR USERS WHO KNOW */}
 
       {page === 'domains' && (
         <section className="domains">
@@ -250,6 +286,127 @@ function App() {
             ))}
 
           </div>
+
+        </section>
+      )}
+
+      {/* INTEREST EXPLORATION */}
+
+      {page === 'interests' && (
+        <section className="domains">
+
+          <h1>
+            Discover Your Interests
+          </h1>
+
+          <p>
+            Tell us what kind of work interests you.
+            We'll suggest a suitable domain to explore.
+          </p>
+
+          <div className="domain-list">
+
+            <button
+              onClick={() =>
+                selectInterest('Building & Creating')
+              }
+            >
+
+              <h2>
+                💻 Building & Creating
+              </h2>
+
+              <span>
+                I enjoy creating websites,
+                applications and digital products.
+              </span>
+
+            </button>
+
+            <button
+              onClick={() =>
+                selectInterest('Working with Data')
+              }
+            >
+
+              <h2>
+                📊 Working with Data
+              </h2>
+
+              <span>
+                I like numbers, patterns,
+                analysis and finding insights.
+              </span>
+
+            </button>
+
+            <button
+              onClick={() =>
+                selectInterest('Security & Problem Solving')
+              }
+            >
+
+              <h2>
+                🔐 Security & Problem Solving
+              </h2>
+
+              <span>
+                I am interested in protecting
+                systems and solving security problems.
+              </span>
+
+            </button>
+
+            <button
+              onClick={() =>
+                selectInterest('Designing Experiences')
+              }
+            >
+
+              <h2>
+                🎨 Designing Experiences
+              </h2>
+
+              <span>
+                I enjoy creativity, visual design
+                and making things easy to use.
+              </span>
+
+            </button>
+
+          </div>
+
+          {selectedInterest && suggestedDomainInfo && (
+            <div className="overview-section">
+
+              <h2>
+                Suggested Domain
+              </h2>
+
+              <p>
+                Based on your interest in{' '}
+                <strong>
+                  {selectedInterest}
+                </strong>
+                , you may want to explore:
+              </p>
+
+              <h2>
+                {suggestedDomainInfo.name}
+              </h2>
+
+              <p>
+                {suggestedDomainInfo.description}
+              </p>
+
+              <button
+                onClick={chooseSuggestedDomain}
+              >
+                Explore This Domain →
+              </button>
+
+            </div>
+          )}
 
         </section>
       )}
